@@ -1,0 +1,67 @@
+body{
+    background-image: url("images/discount.jpg");
+}
+
+.plusButton{
+    visibility: hidden;
+}
+
+.shopList {
+    background-color: white;
+    opacity: 0.9;
+}
+
+.headLine{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.clearfix::after{
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.btn-warning .btn-danger{
+    height: 15px;
+}
+
+.btn-info{
+    margin-right: 15px;
+}
+
+table,th,tr,th{
+    text-align: center;    
+}
+
+.editModal{
+    background-color: rgb(177, 187, 196);
+}
+
+.deleteModal{
+    background-color: rgb(226, 151, 151);
+}
+
+.modal-header h4{
+    text-align: center;
+}
+
+.map{
+    height: 38vh;
+    width: 70vw;
+    margin-top: 10px;
+    opacity: 0.9;
+}
+
+.scrollable{
+    height: 380px;
+    overflow:auto;
+}
+
+#plusButton{
+    opacity: 0.3;
+}
+
+
+    
+                

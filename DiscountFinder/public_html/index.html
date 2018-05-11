@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Akció kereső</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">     
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+        <script src="js.js" type="text/javascript"></script>
+        <link href="discountFinder.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body ng-app="discountApp" ng-controller="discountController as shop">
+        
+    <!-- navbar -->
+    <nav class="navbar navbar">
+      <div class="container-fluid">
+        <div class="navbar-header">      
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>                        
+          </button>
+            <a class="navbar-brand" href="#">Akció kereső</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Főoldal</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Szórólapok<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                  <li><a href="https://tesco.hu/akciok/katalogusok/" target="_blank">Tesco</a></li>
+                  <li><a href="https://www.lidl.hu/hu/index.htm?gclid=CjwKCAjwnLjVBRAdEiwAKSGPI6UcFTbDzr6xpUZQlfYfL-L2dKtwBVW6MpfYcwt5lanQXnZgb2VAlhoCi0oQAvD_BwE" target="_blank">Lidl</a></li>
+                  <li><a href="https://www.mediamarkt.hu/hu/search.html?campaign=true&searchProfile=onlineshop&catalogId=14101&query=ksz_akcio" target="_blank">Media Markt</a></li>
+              </ul>
+            </li>            
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" data-toggle="modal" data-target="#myModalSignUp"><span class="glyphicon glyphicon-user"></span> Regisztráció</a></li>
+            <li><a href="#" data-toggle="modal" data-target="#myModalLogin"><span class="glyphicon glyphicon-log-in"></span> Bejelentkezés</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+  <!-- Modal for registration -->
+  <div class="container">  
+  <div class="modal fade" id="myModalSignUp" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h5 class="modal-title">Regisztráció</h5>
+        </div>
+        <div class="modal-body">
+          <form action="/action_page.php">
+            <div class="form-group">
+              <label for="email">Email cím:</label>
+              <input type="email" class="form-control" id="email">
+            </div>
+            <div class="form-group">
+              <label for="signUpUsrName">Felhasználónév:</label>
+              <input type="text" class="form-control" id="signUpUsrName">
+            </div>
+            <div class="form-group">
+              <label for="signUpPwd1">Jelszó:</label>
+              <input type="password" class="form-control" id="signUpPwd1">
+            </div>            
+            <div class="form-group">
+              <label for="signUpPwd2">Jelszó megerősítése:</label>
+              <input type="password" class="form-control" id="signUpPwd2">
+            </div>            
+            <button type="button" class="btn btn-default" onclick="signUp()" data-dismiss="modal">Regisztráció</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Bezár</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+    
+  <!-- Modal for login -->
+  <div class="container"></div>
+  <div class="modal fade" id="myModalLogin" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h5 class="modal-title">Bejelentkezés</h5>
+        </div>
+        <div class="modal-body">
+          <form action="/action_page.php">
+            <div class="form-group">
+              <label for="loginUsrName">Felhasználónév:</label>
+              <input type="text" class="form-control" id="loginUsrName">
+            </div>
+            <div class="form-group">
+              <label for="loginPwd">Jelszó:</label>
+              <input type="password" class="form-control" id="loginPwd">
+            </div>            
+            <button type="button" class="btn btn-default" onclick="loginCheck()" data-dismiss="modal">Bejelentkezés</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Bezár</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <h1 class="headLine" id="testButton"><strong>Legújabb akciók</strong></h1>
+
+ <!-- shop list -->       
+<div class="shopList">  
+  <button class="btn btn-info pull-right plusButton" data-toggle="modal" data-target="#shopModal"><span class="glyphicon glyphicon-plus-sign"></span> Hozzáadás</button>
+  <div class="clearfix"></div>  
+  <div class="container-fluid scrollable">
+        <table class="table table-hover table-fixed">          
+            <div class="alert alert-warning alert-dismissable fade in" ng-if="message">
+                <a href="#" class="close" aria-label="close" ng-click="clearMessage()">&times;</a><strong>{{message}}<strong>
+            </div>
+            <hr>
+                <th><h4><strong>Üzlet neve</strong></h4></th>
+                <td><h4><strong>Termék típusa</strong></h4></td>
+                <td><h4><strong>Termék neve</strong></h4></td>
+                <td><h4><strong>Egységár</strong></h4></td>
+                <td><h4><strong>Kiszerelés</strong></h4></td>
+                <td><h4><strong>Eredeti ár</strong></h4></td>
+                <td><h4><strong>Akciós ár</strong></h4></td>
+                <td><h4><strong>Kedvezmény</strong></h4></td>
+                <td><h4><strong>Üzlet címe</strong></h4></td>                
+            </tr>
+            <tr ng-repeat="discount in discounts">
+                <th><h5>{{ discount.shopName }}</h5></th>
+                <td><h5>{{ discount.productType }}</h5></td>
+                <td><h5>{{ discount.productName }}</h5></td>
+                <td><h5>{{ discount.unitPrice }}</h5></td>
+                <td><h5>{{ discount.unitType }}</h5></td>
+                <td><h5>{{ discount.priceBefore }}</h5></td>
+                <td><h5>{{ discount.price }}</h5></td>
+                <td><h5>{{ discount.save }}</h5></td>
+                <td><h5>{{ discount.address }}</h5></td>
+                <td><button class="btn btn-success btn-xs" data-toggle="modal" ng-click="showOnMap(discount)"><h5>Térképen mutat</h5></button></td>                         
+            </tr>            
+        </table>
+       </div> 
+    </div>
+  <!-- embed map -->  
+  <div class="container map"> 
+  <iframe class="mapDOM" width="100%" height="100%" frameborder="0" style="border:0"
+  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBn6EdoYLEA-Zyb6g-W7_mA8vuL0XODTIw&q=pécs" allowfullscreen>
+  </iframe>
+  </div>
+
+  <!-- new item for the shop -->
+
+    <div class="container">
+    <div class="modal fade" id="shopModal" role="dialog">
+    <div class="modal-dialog">     
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h5 class="modal-title">Új akció hozzáadása</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                    <label class="control-label col-sm-3">Üzlet neve:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" placeholder="Üzlet neve:" ng-model="newDiscount.shopName">
+                    </div>
+                    </div>
+                    <div class="form-group">
+                    <label class="control-label col-sm-3">Termék típusa:</label>
+                    <div class="col-sm-6">
+                        <select class="form-control" placeholder="Kérem válasszon!" ng-model="newDiscount.productType">
+                            <option>Élelmiszer.1</option> 
+                            <option>Ruházat.2</option>
+                            <option>Műszaki cikk.3</option>
+                            <option>Lakberendezés.4</option>
+                            <option>Barkács.5</option>
+                            <option>Sport.6</option>
+                            <option>Ruházat.7</option>                            
+                            <option>Egészség.8</option>                            
+                          </select>                        
+                    </div>
+                    </div>
+                    <div class="form-group">
+                    <label class="control-label col-sm-3">Termék neve:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" placeholder="Termék neve:" ng-model="newDiscount.productName">
+                    </div>
+                    </div>                                     
+                    <div class="form-group">
+                    <label class="control-label col-sm-3">Egységár:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" placeholder="Egységár:" ng-model="newDiscount.unitPrice">
+                    </div>
+                    </div>                                     
+                    <div class="form-group">
+                    <label class="control-label col-sm-3">Kiszerelés:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" placeholder="Kiszerelés:" ng-model="newDiscount.unitType">
+                    </div>
+                    </div>                                     
+                    <div class="form-group">
+                    <label class="control-label col-sm-3">Eredeti ár:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" placeholder="Eredeti ár:" ng-model="newDiscount.priceBefore">
+                    </div>
+                    </div>                                     
+                    <div class="form-group">
+                    <label class="control-label col-sm-3">Akciós ár:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" placeholder="Akciós ár:" ng-model="newDiscount.price">
+                    </div>
+                    </div>                                     
+                    <div class="form-group">
+                    <label class="control-label col-sm-3">Megtakarítás:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" placeholder="% vagy Ft" ng-model="newDiscount.save">
+                    </div>
+                    </div>                                     
+                    <div class="form-group">
+                    <label class="control-label col-sm-3">Üzlet címe</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" placeholder="Pécs, Siklósi út 52/A, 7632" ng-model="newDiscount.address">
+                    </div>
+                    </div>                                     
+                    <div class="form-group">        
+                        <div class="col-sm-9">
+                            <button type="submit" class="btn btn-success pull-right" ng-click="saveDiscount()" data-dismiss="modal">Hozzáadás</button>                            
+                        </div>
+                    </div>
+                  </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Bezárás</button>
+            </div>
+        </div>      
+    </div>
+    </div>
+    </div>       
+</body>
+</html>
